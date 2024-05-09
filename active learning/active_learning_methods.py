@@ -2,10 +2,10 @@ import os
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from active_learning_base import ActiveLearningBase
 
-import matplotlib.pyplot as plt
 
 class RandomSampling(ActiveLearningBase):
     """This is a first baseline to compare against. It randomly selects a batch of samples from the pool set.
@@ -81,7 +81,8 @@ class CardosoRankedBatchMode(ActiveLearningBase):
 
 
 def al_performance_summary_plot():
-    # First load all result csvs in the output dir
+    """Plotting function which generates a summary plot comparing all active learning methods
+    """
     results = []
     filenames = []
     for file in os.listdir('output'):
@@ -92,7 +93,6 @@ def al_performance_summary_plot():
     # Extract method names from each file
     method_names = ['_'.join(filename.split('_')[1:-2]) for filename in filenames]
 
-    # Then plot all results on a single axis
     fig = plt.figure(dpi=200)
     ax = fig.add_subplot(111)
 
@@ -107,11 +107,7 @@ def al_performance_summary_plot():
 
     # create an array with the positions of the bars on the x axis
     bar_positions = np.arange(len(method_names))
-
-    # plot the first set of bars normally
     ax.bar(bar_positions - width / 2, delta_accs, width, label='Delta Accuracy')
-
-    # plot the second set of bars shifted by 'width'
     ax.bar(bar_positions + width / 2, delta_f1s, width, label='Delta F1')
 
     # replace the x-ticks with the method names
