@@ -4,7 +4,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from sklearn.model_selection import train_test_split
+from scipy.interpolate import griddata, Rbf
+
+
 from active_learning_base import ActiveLearningBase
+from shapley_utils.shapley_engine import ShapEngine
 
 
 class RandomSampling(ActiveLearningBase):
@@ -78,6 +83,69 @@ class CardosoRankedBatchMode(ActiveLearningBase):
         scores = self.alpha * distances + (1.0 - self.alpha) * uncertainty[~selected_instances]
 
         return np.where(~selected_instances)[0][np.argmax(scores)]
+
+class Shapley(ActiveLearningBase):
+    """This is a Shapley value-based active learning approach. It computes the Shapley values for each sample in the training set, interpolate them onto the pool set, and selects the batch of samples with the highest estimated Shapley values.
+    """
+    def __init__(self, *args, val_ratio: float = 0.2, interpolation_method: str = 'rbf'):
+        super().__init__(*args)
+        self.val_ratio = val_ratio
+        self.interpolation_method = interpolation_method
+        print(f'Initialised Shapley with validation ratio={val_ratio} and interpolation method={interpolation_method}')
+        self.__class__.__name__ = f'Shapley_valratio_{val_ratio}_interpolation_{interpolation_method}'
+        
+    def select_batch(self) -> list[int]:
+        estimated_shapley_values = self.estimate_shapley_values()
+        return np.argsort(estimated_shapley_values)[-self.num_samples:]
+    
+    def estimate_shapley_values(self) -> np.ndarray:
+        # Load and split data
+        random_state = 63        
+        X_train, y_train = self.training_set
+        X_test, y_test = self.test_set
+        X, X_val, y, y_val = train_test_split(X_train, y_train, test_size=self.val_ratio, random_state=random_state)
+        
+        # Compute Shapley values on (1-val_size) of the training set
+        ## GR_threshold (Gelman-Rubin statistic) is a criterion to check the convergence of MCMC, reference: https://arxiv.org/pdf/1812.09384.pdf
+        # GR_threshold = 1.0005
+        GR_threshold = 1.1 # for fast convergence of MCMC
+        shap_engine = ShapEngine(X=X, y=y, X_val=X_val, y_val=y_val, 
+                        problem='classification', metric='accuracy', GR_threshold=GR_threshold, model=self.model)
+        
+        ## weights_list holds a list of (alpha, beta) parameters for the Beta distributions in computing Beta-Shapley values. Beta(1,1) weights subsets of all sizes equally and the computation reduces to the original data Shapley values. Larger alpha values assigns higher weights to subsets of smaller sizes.
+        weights_list = [(1,1)] 
+        shap_engine.run(weights_list=weights_list)
+        key = list(shap_engine.results.keys())[0]
+        shapley_values = shap_engine.results[key]
+        return self.interpolate_shapley_values(X, shapley_values, self.interpolation_method)
+    
+    def interpolate_shapley_values(self, X, shapley_values, interpolation_method='rbf'):
+        """
+        Interpolates Shapley values over a predefined pool of coordinates based on the selected interpolation method.
+        
+        Args:
+            X (array): The x-coordinates at which Shapley values are known.
+            shapley_values (array): The Shapley values at each of the x-coordinates.
+            interpolation_method (str): The method of interpolation ('cubic', 'linear', 'nearest', 'quadratic').
+
+        Returns:
+            array: The interpolated values at the pool set coordinates.
+        """
+        # Check that X and shapley_values are compatible
+        assert X.shape[0] == len(shapley_values), "X and shapley_values must have the same number of entries"
+        
+        # Choose the interpolation method
+        if interpolation_method in ['linear', 'cubic', 'nearest']:
+            # griddata handles unstructured N-dimensional data.
+            interpolated_values = griddata(X, shapley_values, self.pool_set_coords, method=interpolation_method)
+        elif interpolation_method == 'rbf':
+            # Radial basis function interpolator instance
+            rbf = Rbf(X[:, 0], X[:, 1], shapley_values, function='multiquadric')
+            interpolated_values = rbf(self.pool_set_coords[:, 0], self.pool_set_coords[:, 1])
+        else:
+            raise ValueError(f"Unsupported interpolation method: {interpolation_method}")
+
+        return interpolated_values
 
 
 def al_performance_summary_plot():
