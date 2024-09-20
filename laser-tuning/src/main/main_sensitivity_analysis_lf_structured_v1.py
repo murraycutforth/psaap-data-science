@@ -11,26 +11,29 @@ from utils_gg_combustor import read_gg_combustor_file, extract_laser_fwhm, extra
 
 
 def main():
-    # Script-level arguments
-    temperature_level = 2.0
-    snapshot_ind = 1000
 
-    data_dir = pathlib.Path('../data/LF/01_quiescent_systematic')
-    run_dirs = sorted(data_dir.glob('*'))
-    df = extract_meta_df(run_dirs)
+    for temperature_level in [2.0, 3.0, 4.0]:
 
-    print(f'Found {len(run_dirs)} runs in {data_dir}')
+        data_dir = pathlib.Path('/Volumes/My Passport for Mac/laser_tuning/LF/01_aa_quiescent_systematic')
+        outdir = pathlib.Path('../output/lf_structured_v1')
+        outdir = outdir / f'temperature_{temperature_level:.2f}'
+        outdir.mkdir(exist_ok=True, parents=True)
 
-    # 3D plots of temperature isosurfaces for qualitative comparison
-    #plot_temp_isosurface_mega_plot(run_dirs, temperature_level)
-    #plot_all_temp_arrs(run_dirs, temperature_level)
+        run_dirs = sorted(data_dir.glob('[0-9][0-9]'))
+        df = extract_meta_df(run_dirs)
 
-    # Pair plot of the 3 input parameters which are varied
-    plot_meta_df(df)
+        print(f'Found {len(run_dirs)} runs in {data_dir}')
 
-    # Min radial extent vs. time plot
-    run_dir_to_min_radial_extent_data = plot_all_min_radial_extents(run_dirs, temperature_level, df)
-    plot_ejecta_velocity(run_dir_to_min_radial_extent_data, df)
+        # 3D plots of temperature isosurfaces for qualitative comparison
+        #plot_temp_isosurface_mega_plot(run_dirs, temperature_level)
+        #plot_all_temp_arrs(run_dirs, temperature_level)
+
+        # Pair plot of the 3 input parameters which are varied
+        plot_meta_df(df, outdir)
+
+        # Min radial extent vs. time plot
+        #run_dir_to_min_radial_extent_data = plot_all_min_radial_extents(run_dirs, temperature_level, df, outdir)
+        #plot_ejecta_velocity(run_dir_to_min_radial_extent_data, df, temperature_level, outdir)
 
 
 def estimate_ejecta_velocity(times, min_radial_extents):
@@ -73,8 +76,8 @@ def fit_slope_with_confidence_intervals(x, y, num_bootstrap=1000, confidence_lev
     return slope, lower_bound, upper_bound
 
 
-def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFrame) -> None:
-    fig, ax = plt.subplots(1, 3, figsize=(9, 3), dpi=200)
+def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFrame, temperature_level, outdir) -> None:
+    fig, ax = plt.subplots(1, 4, figsize=(12, 3), dpi=200)
 
     rows = []
 
@@ -92,11 +95,17 @@ def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFra
         ax[1].errorbar(alpha, ejecta_v, yerr=[[yerr_lower], [yerr_upper]], fmt='o', color='blue')
         ax[2].scatter(row['laser_fwhm'], ejecta_v, color='blue')
         ax[2].errorbar(row['laser_fwhm'], ejecta_v, yerr=[[yerr_lower], [yerr_upper]], fmt='o', color='blue')
+        ax[3].scatter(row['axial_length'], ejecta_v, color='blue')
+        ax[3].errorbar(row['axial_length'], ejecta_v, yerr=[[yerr_lower], [yerr_upper]], fmt='o', color='blue')
 
         rows.append({
             'alpha': alpha,
             'beta': beta,
+            'laser_fwhm': row['laser_fwhm'],
+            'axial_length': row['axial_length'],
             'ejecta_v': ejecta_v,
+            'ejecta_v_upper': upper,
+            'ejecta_v_lower': lower,
         })
 
     ax[0].set_xlabel('$\\beta$')
@@ -107,10 +116,11 @@ def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFra
     ax[2].set_ylabel('Ejecta velocity [m/s]')
 
     fig.tight_layout()
-    fig.savefig('../output/01_quiescent_systematic/ejecta_velocity.png')
+    fig.savefig(outdir / 'ejecta_velocity.png')
     plt.close(fig)
 
     df = pd.DataFrame(rows)
+    df.to_csv(outdir / f'ejecta_velocity_{temperature_level:.2f}.csv', index=False)
 
     # Plot 2D scatter of alpha vs beta, color by ejecta velocity
     fig, ax = plt.subplots(figsize=(4, 3), dpi=200)
@@ -124,14 +134,12 @@ def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFra
     cbar.set_label('Ejecta velocity [m/s]')
 
     fig.tight_layout()
-    fig.savefig('../output/01_quiescent_systematic/ejecta_velocity_alpha_beta.png')
+    fig.savefig(outdir / 'ejecta_velocity_alpha_beta.png')
     plt.close(fig)
 
 
-def plot_all_min_radial_extents(run_dirs: list, temperature_level: float, df: pd.DataFrame) -> dict:
+def plot_all_min_radial_extents(run_dirs: list, temperature_level: float, df: pd.DataFrame, outdir) -> dict:
     # For each run, plot the min radial extent as a function of time
-    outdir = pathlib.Path('../output/01_quiescent_systematic/min_radial_extent')
-    outdir.mkdir(exist_ok=True, parents=True)
 
     run_dir_to_min_radial_extent_data = {}
 
@@ -162,8 +170,37 @@ def plot_all_min_radial_extents(run_dirs: list, temperature_level: float, df: pd
     write_min_radial_extent_plot_fwhm(run_dir_to_min_radial_extent_data, outpath, df)
     outpath = outdir / 'min_radial_extent_plot_alpha.png'
     write_min_radial_extent_plot_alpha(run_dir_to_min_radial_extent_data, outpath, df)
+    outpath = outdir / 'min_radial_extent_plot_L.png'
+    write_min_radial_extent_plot_L(run_dir_to_min_radial_extent_data, outpath, df)
 
     return run_dir_to_min_radial_extent_data
+
+
+def write_min_radial_extent_plot_L(run_dir_to_min_radial_extent_data: dict, outpath: pathlib.Path, df: pd.DataFrame) -> None:
+    fig, ax = plt.subplots(figsize=(4, 3), dpi=200)
+
+    vmin = 0.25
+    vmax = 0.75
+    cmap = plt.get_cmap('viridis', 256)
+    norm = plt.Normalize(vmin, vmax)
+
+    for run_dir, (snapshot_inds, min_radial_extents) in run_dir_to_min_radial_extent_data.items():
+        row = df.loc[run_dir]
+        L = row['axial_length']
+        ax.plot(snapshot_inds, min_radial_extents, color=cmap(norm(L)), alpha=1)
+
+    # Add colorbar
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=ax)
+    cbar.set_label('L')
+
+    ax.set_xlabel('Time $\\mu s$')
+    ax.set_ylabel('Min radial extent [mm]')
+
+    fig.tight_layout()
+    fig.savefig(outpath)
+    plt.close(fig)
 
 
 def write_min_radial_extent_plot_alpha(run_dir_to_min_radial_extent_data: dict, outpath: pathlib.Path, df: pd.DataFrame) -> None:
@@ -197,8 +234,8 @@ def write_min_radial_extent_plot_alpha(run_dir_to_min_radial_extent_data: dict, 
 def write_min_radial_extent_plot_fwhm(run_dir_to_min_radial_extent_data: dict, outpath: pathlib.Path, df: pd.DataFrame) -> None:
     fig, ax = plt.subplots(figsize=(4, 3), dpi=200)
 
-    vmin = 0.75e-3
-    vmax = 1.6e-3
+    vmin = 0.8e-3
+    vmax = 1.4e-3
     cmap = plt.get_cmap('viridis', 256)
     norm = plt.Normalize(vmin, vmax)
 
@@ -225,13 +262,14 @@ def write_min_radial_extent_plot_beta(run_dir_to_min_radial_extent_data: dict, o
     fig, ax = plt.subplots(figsize=(4, 3), dpi=200)
 
     vmin = 1.0
-    vmax = 2.0
+    vmax = 1.8
     cmap = plt.get_cmap('viridis', 256)
     norm = plt.Normalize(vmin, vmax)
 
     for run_dir, (snapshot_inds, min_radial_extents) in run_dir_to_min_radial_extent_data.items():
         row = df.loc[run_dir]
         beta = row['near_radius'] / row['far_radius']
+        print(beta)
         ax.plot(snapshot_inds, min_radial_extents, color=cmap(norm(beta)), alpha=1)
 
     # Add colorbar
@@ -352,12 +390,11 @@ def extract_temp_binary_arr(run_dir: pathlib.Path, snapshot_ind: int, temperatur
     return arr
 
 
-def plot_meta_df(df: pd.DataFrame):
-    # Pairplot of the three parameters
-    fig = plt.figure(figsize=(8, 8))
-    sns.pairplot(df)
+def plot_meta_df(df: pd.DataFrame, outdir: pathlib.Path) -> None:
+    fig = plt.figure(figsize=(4, 4), dpi=200)
+    sns.pairplot(df[['laser_fwhm [dimensionless]', 'alpha', 'beta', 'axial_length [mm]']])
     plt.tight_layout()
-    plt.savefig('../output/01_quiescent_systematic/meta_pairplot.png')
+    plt.savefig(outdir / 'meta_pairplot.png')
     plt.close(fig)
 
 
@@ -371,10 +408,13 @@ def extract_meta_df(run_dirs: list) -> pd.DataFrame:
 
         rows.append({
             'run_dir': run_dir,
-            'laser_fwhm': laser_fwhm,
+            'laser_fwhm [dimensionless]': laser_fwhm,
             'near_radius': near_radius,
             'far_radius': far_radius,
-            'axial_length': axial_length
+            'axial_length': axial_length,
+            'axial_length [mm]': axial_length * 3.175,  # Convert to [mm] using length scale of 3.175 mm
+            'alpha': axial_length / (2 * near_radius),
+            'beta': near_radius / far_radius,
         })
 
     # Set index to run_dir

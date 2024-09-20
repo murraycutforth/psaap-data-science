@@ -72,14 +72,15 @@ def write_isosurface_plot_from_arr(vol: np.ndarray, outname: Path, level: float,
 
 def write_isosurface_mega_plot_from_arrs(temp_arrs, run_names, outpath, temperature_level, n, m):
     assert len(temp_arrs) == len(run_names)
-    assert len(temp_arrs) == n * m
+    assert len(temp_arrs) <= n * m
 
-    #fig, axs = plt.subplots(n, m, figsize=(m * 2, n * 2), dpi=200)
     fig = plt.figure(figsize=(m * 4, n * 4), dpi=200)
 
     for i in range(n * m):
-        print(f"Processing {i + 1}/{n * m}")
         ax = fig.add_subplot(n, m, i + 1, projection="3d")
+
+        if i >= len(temp_arrs):
+            continue
 
         temp_arr = temp_arrs[i]
         run_name = run_names[i]

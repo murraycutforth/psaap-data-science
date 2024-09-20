@@ -12,8 +12,7 @@ from utils_gg_combustor import read_gg_combustor_file, extract_laser_fwhm, extra
 
 def main():
     # Script-level arguments
-    temperature_level = 2.0
-    snapshot_ind = 1000
+    temperature_level = 4.0
 
     data_dir = pathlib.Path('../data/LF/01_quiescent_systematic')
     run_dirs = sorted(data_dir.glob('*'))
@@ -30,7 +29,7 @@ def main():
 
     # Min radial extent vs. time plot
     run_dir_to_min_radial_extent_data = plot_all_min_radial_extents(run_dirs, temperature_level, df)
-    plot_ejecta_velocity(run_dir_to_min_radial_extent_data, df)
+    plot_ejecta_velocity(run_dir_to_min_radial_extent_data, df, temperature_level)
 
 
 def estimate_ejecta_velocity(times, min_radial_extents):
@@ -73,7 +72,7 @@ def fit_slope_with_confidence_intervals(x, y, num_bootstrap=1000, confidence_lev
     return slope, lower_bound, upper_bound
 
 
-def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFrame) -> None:
+def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFrame, temperature_level) -> None:
     fig, ax = plt.subplots(1, 3, figsize=(9, 3), dpi=200)
 
     rows = []
@@ -97,6 +96,8 @@ def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFra
             'alpha': alpha,
             'beta': beta,
             'ejecta_v': ejecta_v,
+            'ejecta_v_upper': upper,
+            'ejecta_v_lower': lower,
         })
 
     ax[0].set_xlabel('$\\beta$')
@@ -111,6 +112,7 @@ def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFra
     plt.close(fig)
 
     df = pd.DataFrame(rows)
+    df.to_csv(f'../output/01_quiescent_systematic/ejecta_velocity_{temperature_level:.2f}.csv', index=False)
 
     # Plot 2D scatter of alpha vs beta, color by ejecta velocity
     fig, ax = plt.subplots(figsize=(4, 3), dpi=200)
