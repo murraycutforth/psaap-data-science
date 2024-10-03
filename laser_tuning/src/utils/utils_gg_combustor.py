@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import numpy as np
+
 
 def read_gg_combustor_file(filepath: Path) -> dict:
     with open(filepath, 'r') as f:
@@ -25,3 +27,9 @@ def extract_laser_geometry(filepath: Path) -> tuple:
     far_radius = data['Flow']['laser']['farRadius']
     axial_length = data['Flow']['laser']['axialLength']
     return near_radius, far_radius, axial_length
+
+
+def extract_laser_focal_location(filepath: Path) -> np.ndarray:
+    data = read_gg_combustor_file(filepath)
+    coords = data['Flow']['laser']['focalLocation']
+    return np.array(coords)

@@ -29,6 +29,54 @@ def write_slice_plot(vol: np.array, dx: float, outpath: Path, verbose: bool) -> 
     plt.savefig(outpath)
 
 
+def write_isosurface_and_slice_plot(vol: np.array, dx: float, level, outpath: Path, title: str) -> None:
+    assert len(vol.shape) == 3
+
+    fig = plt.figure(figsize=(8, 8), dpi=200)
+    grid = plt.GridSpec(2, 3, height_ratios=[2, 1])
+
+    # Top row is 3D isosurface plot
+
+    ax1 = fig.add_subplot(grid[0, :], projection="3d")
+
+    ax1.set_xlim(0, vol.shape[0] * dx)
+    ax1.set_ylim(0, vol.shape[1] * dx)
+    ax1.set_zlim(0, vol.shape[2] * dx)
+
+    verts, faces, normals, values = skimage.measure.marching_cubes(
+        vol, level, spacing=(dx, dx, dx), allow_degenerate=False, method='lewiner'
+    )
+
+    mesh = Poly3DCollection(verts[faces])
+    mesh.set_edgecolor("k")
+    mesh.set_linewidth(0.05)
+    mesh.set_alpha(0.9)
+
+    ax1.plot_trisurf(verts[:, 0], verts[:, 1], np.zeros_like(verts[:, 2]), triangles=faces, color='gray', alpha=0.3)
+    ax1.plot_trisurf(verts[:, 0], vol.shape[1] * np.ones_like(verts[:, 1]) * dx, verts[:, 2], triangles=faces, color='gray', alpha=0.3)
+    ax1.plot_trisurf(np.zeros_like(verts[:, 0]), verts[:, 1], verts[:, 2], triangles=faces, color='gray', alpha=0.3)
+
+    ax1.add_collection3d(mesh)
+    ax1.set_aspect('equal')
+    ax1.set_title(f'Isosurface at {level} [K]')
+
+    # Bottom row is 3 orthogonal slices
+
+    for i in range(3):
+        ax = fig.add_subplot(grid[1, i])
+        slice = np.take(vol, indices=vol.shape[i] // 2, axis=i)
+        im = ax.imshow(slice, origin='lower', vmin=vol.min(), vmax=vol.max())
+        fig.colorbar(im, ax=ax)
+        ax.set_title(f'Slice {i} (index {vol.shape[i] // 2})')
+
+    fig.suptitle(title)
+    plt.tight_layout()
+    plt.savefig(outpath)
+    plt.close(fig)
+
+
+
+
 def write_isosurface_plot_from_arr(vol: np.ndarray, outname: Path, level: float, verbose: bool, title: str = None) -> None:
     assert len(vol.shape) == 3
 
@@ -56,6 +104,8 @@ def write_isosurface_plot_from_arr(vol: np.ndarray, outname: Path, level: float,
         # Plot 3D vis
         ax.add_collection3d(mesh)
 
+        ax.set_aspect('equal')
+
     else:
         pass
 
@@ -68,6 +118,14 @@ def write_isosurface_plot_from_arr(vol: np.ndarray, outname: Path, level: float,
         print(f"saving {outname}")
     plt.savefig(outname)
     plt.close(fig)
+
+
+def write_isosurface_plot_with_spatial_coords(vol: np.ndarray, coords: np.ndarray, outname: Path, level: float, verbose: bool, title: str = None) -> None:
+    # As above, but plot in physical space instead of mesh space
+
+    assert len(vol.shape) == 3
+    assert vol.shape == coords.shape[:3]
+    assert coords.shape[3] == 3
 
 
 def write_isosurface_mega_plot_from_arrs(temp_arrs, run_names, outpath, temperature_level, n, m):

@@ -132,7 +132,7 @@ def plot_ejecta_velocity(run_dir_to_min_radial_extent_data: dict, df: pd.DataFra
 
 def plot_all_min_radial_extents(run_dirs: list, temperature_level: float, df: pd.DataFrame) -> dict:
     # For each run, plot the min radial extent as a function of time
-    outdir = pathlib.Path('../output/01_quiescent_systematic/min_radial_extent')
+    outdir = pathlib.Path('../../output/01_quiescent_systematic/min_radial_extent')
     outdir.mkdir(exist_ok=True, parents=True)
 
     run_dir_to_min_radial_extent_data = {}
@@ -302,7 +302,7 @@ def plot_temp_isosurface_mega_plot(run_dirs, temperature_level) -> None:
 
 def plot_all_temp_arrs(run_dirs: list, temperature_level: float):
     # Plot temperature isosurface for each snapshot in each run
-    outdir = pathlib.Path('../output/01_quiescent_systematic/temperature_isosurfaces')
+    outdir = pathlib.Path('../../output/01_quiescent_systematic/temperature_isosurfaces')
     outdir.mkdir(exist_ok=True, parents=True)
 
     for run_dir in run_dirs:
@@ -325,7 +325,7 @@ def plot_all_temp_arrs(run_dirs: list, temperature_level: float):
 
 def write_isosurface_mega_plot(snapshot_ind: int, max_num_runs: int, run_dirs: list, temperature_level: float):
     # Create a large 3D multiplot of isosurfaces from all runs at the same snapshot
-    outdir = pathlib.Path('../output/01_quiescent_systematic/temperature_isosurfaces/mega_plot')
+    outdir = pathlib.Path('../../output/01_quiescent_systematic/temperature_isosurfaces/mega_plot')
     outdir.mkdir(exist_ok=True, parents=True)
 
     temp_arrs = []

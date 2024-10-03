@@ -15,7 +15,7 @@ def main():
     for temperature_level in [2.0, 3.0, 4.0]:
 
         data_dir = pathlib.Path('/Volumes/My Passport for Mac/laser_tuning/LF/01_aa_quiescent_systematic')
-        outdir = pathlib.Path('../output/lf_structured_v1')
+        outdir = pathlib.Path('../../output/lf_structured_v1')
         outdir = outdir / f'temperature_{temperature_level:.2f}'
         outdir.mkdir(exist_ok=True, parents=True)
 
@@ -338,7 +338,7 @@ def plot_temp_isosurface_mega_plot(run_dirs, temperature_level) -> None:
 
 def plot_all_temp_arrs(run_dirs: list, temperature_level: float):
     # Plot temperature isosurface for each snapshot in each run
-    outdir = pathlib.Path('../output/01_quiescent_systematic/temperature_isosurfaces')
+    outdir = pathlib.Path('../../output/01_quiescent_systematic/temperature_isosurfaces')
     outdir.mkdir(exist_ok=True, parents=True)
 
     for run_dir in run_dirs:
@@ -361,7 +361,7 @@ def plot_all_temp_arrs(run_dirs: list, temperature_level: float):
 
 def write_isosurface_mega_plot(snapshot_ind: int, max_num_runs: int, run_dirs: list, temperature_level: float):
     # Create a large 3D multiplot of isosurfaces from all runs at the same snapshot
-    outdir = pathlib.Path('../output/01_quiescent_systematic/temperature_isosurfaces/mega_plot')
+    outdir = pathlib.Path('../../output/01_quiescent_systematic/temperature_isosurfaces/mega_plot')
     outdir.mkdir(exist_ok=True, parents=True)
 
     temp_arrs = []

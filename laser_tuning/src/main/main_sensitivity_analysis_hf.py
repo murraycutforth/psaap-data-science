@@ -130,7 +130,7 @@ def plot_ejecta_velocity(run_id_to_min_radial_extent_data: dict, df: pd.DataFram
 def plot_all_min_radial_extents(runs: list, temperature_level: float, df: pd.DataFrame) -> dict:
     # For each run, plot the min radial extent as a function of time
 
-    outdir = pathlib.Path('../output/hf/min_radial_extent')
+    outdir = pathlib.Path('../../output/hf/min_radial_extent')
     outdir.mkdir(exist_ok=True, parents=True)
 
     run_ids = set([extract_run_id(run) for run in runs])
@@ -276,7 +276,7 @@ def extract_run_id(run: pathlib.Path):
 
 def plot_all_temp_arrs(runs: list, temperature_level: float):
     # Plot temperature isosurface for each snapshot in each run
-    outdir = pathlib.Path('../output/hf/temperature_isosurfaces')
+    outdir = pathlib.Path('../../output/hf/temperature_isosurfaces')
     outdir.mkdir(exist_ok=True, parents=True)
 
     run_ids = set([extract_run_id(run) for run in runs])
@@ -305,7 +305,7 @@ def extract_temp_arr(run_name: pathlib.Path):
 
 def write_isosurface_mega_plot(snapshot_ind: int, max_num_runs: int, runs: list, temperature_level: float):
     # Create a large 3D multiplot of isosurfaces from all runs at the same snapshot
-    outdir = pathlib.Path('../output/hf/temperature_isosurfaces/mega_plot')
+    outdir = pathlib.Path('../../output/hf/temperature_isosurfaces/mega_plot')
     outdir.mkdir(exist_ok=True, parents=True)
 
     runs_given_snapshot = [run for run in runs if int(run.stem.split('_')[-1]) == snapshot_ind]
@@ -377,6 +377,8 @@ def extract_xyz_arr(run: pathlib.Path) -> np.ndarray:
 
 
 def extract_sim_time(run: pathlib.Path) -> float:
+    """Return simulation time in microseconds
+    """
     sim_time = np.load(run)['simTime']
     sim_time *= 4.477124  # Multiply by time scale to get units of [us]
     return sim_time
