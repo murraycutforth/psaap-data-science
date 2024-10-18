@@ -1,0 +1,21 @@
+#!/bin/bash
+sbatch run_0.sh
+sbatch run_1.sh
+sbatch run_2.sh
+sbatch run_3.sh
+sbatch run_4.sh
+sbatch run_5.sh
+sbatch run_6.sh
+sbatch run_7.sh
+sbatch run_8.sh
+sbatch run_9.sh
+sbatch run_10.sh
+sbatch run_11.sh
+sbatch run_12.sh
+sbatch run_13.sh
+sbatch run_14.sh
+sbatch run_15.sh
+sbatch run_16.sh
+sbatch run_17.sh
+sbatch run_18.sh
+sbatch run_19.sh
