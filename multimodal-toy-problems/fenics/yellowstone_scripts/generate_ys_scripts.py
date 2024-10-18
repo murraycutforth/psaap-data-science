@@ -25,7 +25,7 @@ def generate_script(re_list: list, script_ind: int) -> pathlib.Path:
         f.write('#sbatch -t 48:00:00\n')
         f.write('#sbatch -p cpu\n')
         f.write('eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"\n')
-        f.write('conda activate fenicsx\n')
+        f.write('conda activate fenicsx-env\n')
         f.write('cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics\n')
         for re in re_list:
             f.write(f'mpirun -n 32 python flow_past_cylinder.py --Re {re}\n')
