@@ -20,10 +20,10 @@ def generate_script(re_list: list, script_ind: int) -> pathlib.Path:
 
     with open(script_name, 'w') as f:
         f.write('#!/bin/bash\n')
-        f.write(f'#sbatch -j fenicsx_{script_ind}\n')
-        f.write('#sbatch -n 1\n')
-        f.write('#sbatch -t 48:00:00\n')
-        f.write('#sbatch -p cpu\n')
+        f.write(f'#SBATCH -j fenicsx_{script_ind}\n')
+        f.write('#SBATCH -n 1\n')
+        f.write('#SBATCH -t 48:00:00\n')
+        f.write('#SBATCH -p cpu\n')
         f.write('eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"\n')
         f.write('conda activate fenicsx-env\n')
         f.write('cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics\n')

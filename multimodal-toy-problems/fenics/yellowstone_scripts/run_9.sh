@@ -1,8 +1,8 @@
 #!/bin/bash
-#sbatch -j fenicsx_9
-#sbatch -n 1
-#sbatch -t 48:00:00
-#sbatch -p cpu
+#SBATCH -j fenicsx_9
+#SBATCH -n 1
+#SBATCH -t 48:00:00
+#SBATCH -p cpu
 eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"
 conda activate fenicsx-env
 cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics
