@@ -299,7 +299,7 @@ def save_simulation_data(u_, p_, t, Re, mesh):
     data_tensor = np.stack([u_x_grid, u_y_grid, p_grid], axis=-1)  # Shape: (nx, ny, 3)
     
     # Save the tensor with the time in the filename
-    np.save(save_path / f"simulation_data_t{t:.3f}.npy", data_tensor)
+    np.savez_compressed(save_path / f"simulation_data_t{t:.3f}.npy", data=data_tensor.astype(np.float16))
 
 
 
