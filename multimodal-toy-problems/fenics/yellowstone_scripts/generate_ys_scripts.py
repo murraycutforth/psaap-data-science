@@ -6,7 +6,7 @@ import math
 RE_MIN = 100
 RE_MAX = 2001
 RE_STEP = 1
-TOTAL_HOURS = 48
+TOTAL_HOURS = 24
 SIMS_PER_HOUR_PER_NODE = 2
 
 def num_nodes_required():
