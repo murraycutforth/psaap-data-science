@@ -252,7 +252,7 @@ from scipy.interpolate import griddata
 def save_simulation_data(u_, p_, t, Re, mesh):
     # Create the directory with the Reynolds number as the folder name
     save_path = get_save_path(Re)
-    save_path.mkdir(exist_ok=False, parents=True)
+    save_path.mkdir(exist_ok=True, parents=True)
     
     # Get the DoF coordinates and function values for u_
     V = u_.function_space
@@ -299,7 +299,7 @@ def save_simulation_data(u_, p_, t, Re, mesh):
     data_tensor = np.stack([u_x_grid, u_y_grid, p_grid], axis=-1)  # Shape: (nx, ny, 3)
     
     # Save the tensor with the time in the filename
-    np.savez_compressed(save_path / f"simulation_data_t{t:.3f}.npy", data=data_tensor.astype(np.float16))
+    np.savez_compressed(save_path / f"simulation_data_t{t:.3f}.npz", data=data_tensor.astype(np.float16))
 
 
 
