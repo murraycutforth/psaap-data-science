@@ -56,6 +56,15 @@ parser.add_argument('--Re', type=float, required=True, help='Reynolds number')
 args = parser.parse_args()
 Re = args.Re
 
+def get_save_path(Re):
+    return Path("output") / f"Re{Re:.3f}"
+
+# Check for a pre-existing simulation, and skip if found
+save_path = get_save_path(Re)
+if save_path.exists():
+    print(f"Simulation for Re={Re} already exists. Skipping.")
+    exit()
+
 # Initialize GMSH
 gmsh.initialize()
 
@@ -240,11 +249,10 @@ import os
 import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
 
-def save_simulation_data(u_, p_, t, Re, mesh, output_folder="output"):
+def save_simulation_data(u_, p_, t, Re, mesh):
     # Create the directory with the Reynolds number as the folder name
-    folder_name = f"Re{Re:.3f}"
-    save_path = Path(output_folder) / folder_name
-    save_path.mkdir(exist_ok=True, parents=True)
+    save_path = get_save_path(Re)
+    save_path.mkdir(exist_ok=False, parents=True)
     
     # Get the DoF coordinates and function values for u_
     V = u_.function_space
