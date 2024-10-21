@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH -j fenicsx_24
-#SBATCH -n 1
+#SBATCH -J fenicsx_24
+#SBATCH -N 1
 #SBATCH -t 24:00:00
 #SBATCH -p cpu
 eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"

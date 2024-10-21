@@ -20,8 +20,8 @@ def generate_script(re_list: list, script_ind: int) -> pathlib.Path:
 
     with open(script_name, 'w') as f:
         f.write('#!/bin/bash\n')
-        f.write(f'#SBATCH -j fenicsx_{script_ind}\n')
-        f.write('#SBATCH -n 1\n')
+        f.write(f'#SBATCH -J fenicsx_{script_ind}\n')
+        f.write('#SBATCH -N 1\n')
         f.write('#SBATCH -t 24:00:00\n')
         f.write('#SBATCH -p cpu\n')
         f.write('eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"\n')
