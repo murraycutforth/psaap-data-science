@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.ndimage import gaussian_filter
 
 from plotting_utils import vol_and_im_plot
 
@@ -90,6 +91,22 @@ def construct_n_circular_shock(Nx, Ny, Nz, R, n_inside, n_outside):
     z = np.linspace(-1, 1, Nz)
     X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
     arr = n_outside + n_inside * (np.sqrt(X ** 2 + Y ** 2) < R)
+    return arr
+
+
+def construct_spherical_shock(Nx, Ny, Nz, R, n_inside, n_outside, smoothed: bool = False):
+    """Construct a 3D spherical shock with radius R
+    """
+    x = np.linspace(-1, 1, Nx)
+    y = np.linspace(-1, 1, Ny)
+    z = np.linspace(-1, 1, Nz)
+    X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+    arr = n_outside + n_inside * (np.sqrt(X ** 2 + Y ** 2 + Z ** 2) < R)
+
+    if smoothed:
+        # Apply a 3D Gaussian smoothing kernel
+        arr = gaussian_filter(arr, sigma=1)
+
     return arr
 
 
