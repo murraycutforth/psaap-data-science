@@ -297,9 +297,12 @@ def save_simulation_data(u_, p_, t, Re, mesh):
     
     # Create the data tensor
     data_tensor = np.stack([u_x_grid, u_y_grid, p_grid], axis=-1)  # Shape: (nx, ny, 3)
+    data_tensor = data_tensor.astype(np.float16)
     
     # Save the tensor with the time in the filename
-    np.savez_compressed(save_path / f"simulation_data_t{t:.3f}.npz", data=data_tensor.astype(np.float16))
+    np.savez_compressed(save_path / f"simulation_data_t{t:.3f}.npz", data=data_tensor, t=t)
+
+    x = np.load(save_path / f"simulation_data_t{t:.3f}.npz")["data"]
 
 
 
@@ -364,6 +367,7 @@ if mesh.comm.rank == 0:
 # Directory for results
 folder = Path("results")
 folder.mkdir(exist_ok=True, parents=True)
+comm = MPI.COMM_WORLD
 
 progress = tqdm.autonotebook.tqdm(desc="Solving PDE", total=num_steps)
 for i in range(num_steps):
@@ -413,7 +417,8 @@ for i in range(num_steps):
         loc_.copy(loc_n)
 
     # Save the simulation data for the current time step
-    save_simulation_data(u_, p_, t, Re, mesh)
+    if comm.Get_rank() == 0:
+        save_simulation_data(u_, p_, t, Re, mesh)
 
     # Compute physical quantities
     drag_coeff = mesh.comm.gather(assemble_scalar(drag), root=0)
