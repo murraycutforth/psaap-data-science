@@ -28,7 +28,7 @@ def generate_script(re_list: list, script_ind: int) -> pathlib.Path:
         f.write('conda activate fenicsx-env\n')
         f.write('cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics\n')
         for re in re_list:
-            f.write(f'mpirun -n 32 python flow_past_cylinder.py --Re {re}\n')
+            f.write(f'python flow_past_cylinder.py --Re {re}\n')
 
     return script_name
 
