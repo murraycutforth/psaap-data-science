@@ -6,7 +6,50 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
-def write_slice_plot(vol: np.array, dx: float, outpath: Path, verbose: bool) -> None:
+def vol_and_im_plot(vol: np.array, im: np.array):
+    """Fancy plot showing 3D isosurface on LHS and 2D image on RHS
+    """
+    fig = plt.figure(figsize=(12, 6), dpi=200)
+    grid = plt.GridSpec(1, 2, width_ratios=[2, 1])
+
+    # Left is 3D isosurface plot
+
+    ax1 = fig.add_subplot(grid[0, 0], projection="3d")
+
+    ax1.set_xlim(0, vol.shape[0])
+    ax1.set_ylim(0, vol.shape[1])
+    ax1.set_zlim(0, vol.shape[2])
+
+    verts, faces, normals, values = skimage.measure.marching_cubes(
+        vol, level=0.5, spacing=(1, 1, 1), allow_degenerate=False, method='lewiner'
+    )
+
+    mesh = Poly3DCollection(verts[faces])
+    mesh.set_edgecolor("k")
+    mesh.set_linewidth(0.05)
+    mesh.set_alpha(0.9)
+
+    ax1.plot_trisurf(verts[:, 0], verts[:, 1], np.zeros_like(verts[:, 2]), triangles=faces, color='gray', alpha=0.3)
+    ax1.plot_trisurf(verts[:, 0], vol.shape[1] * np.ones_like(verts[:, 1]), verts[:, 2], triangles=faces, color='gray', alpha=0.3)
+    ax1.plot_trisurf(np.zeros_like(verts[:, 0]), verts[:, 1], verts[:, 2], triangles=faces, color='gray', alpha=0.3)
+
+    ax1.add_collection3d(mesh)
+    ax1.set_aspect('equal')
+
+    # Right is 2D image plot
+
+    ax2 = fig.add_subplot(grid[0, 1])
+    ax2.imshow(im, cmap='gray')
+    ax2.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+def write_slice_plot(vol: np.array, outpath: Path, verbose: bool) -> None:
+    """Write a 3-panel slice plot of a 3D volume
+    """
     assert len(vol.shape) == 3
     assert vol.shape[0] == vol.shape[1] == vol.shape[2]
 
@@ -30,6 +73,8 @@ def write_slice_plot(vol: np.array, dx: float, outpath: Path, verbose: bool) -> 
 
 
 def write_isosurface_and_slice_plot(vol: np.array, dx: float, level, outpath: Path, title: str) -> None:
+    """Fancy plot showing 3D isosurface and 3 orthogonal slices below
+    """
     assert len(vol.shape) == 3
 
     fig = plt.figure(figsize=(8, 8), dpi=200)
@@ -75,9 +120,9 @@ def write_isosurface_and_slice_plot(vol: np.array, dx: float, level, outpath: Pa
     plt.close(fig)
 
 
-
-
 def write_isosurface_plot_from_arr(vol: np.ndarray, outname: Path, level: float, verbose: bool, title: str = None) -> None:
+    """Write a 3D isosurface plot of a 3D volume
+    """
     assert len(vol.shape) == 3
 
     fig = plt.figure(figsize=(6, 6), dpi=200)
@@ -120,15 +165,9 @@ def write_isosurface_plot_from_arr(vol: np.ndarray, outname: Path, level: float,
     plt.close(fig)
 
 
-def write_isosurface_plot_with_spatial_coords(vol: np.ndarray, coords: np.ndarray, outname: Path, level: float, verbose: bool, title: str = None) -> None:
-    # As above, but plot in physical space instead of mesh space
-
-    assert len(vol.shape) == 3
-    assert vol.shape == coords.shape[:3]
-    assert coords.shape[3] == 3
-
-
 def write_isosurface_mega_plot_from_arrs(temp_arrs, run_names, outpath, temperature_level, n, m):
+    """Large set of mxn plots showing isosurfaces of temperature levels
+    """
     assert len(temp_arrs) == len(run_names)
     assert len(temp_arrs) <= n * m
 

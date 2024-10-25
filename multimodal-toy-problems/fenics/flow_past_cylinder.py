@@ -302,9 +302,6 @@ def save_simulation_data(u_, p_, t, Re, mesh):
     # Save the tensor with the time in the filename
     np.savez_compressed(save_path / f"simulation_data_t{t:.3f}.npz", data=data_tensor, t=t)
 
-    x = np.load(save_path / f"simulation_data_t{t:.3f}.npz")["data"]
-
-
 
 def save_figures(t_u, C_D, C_L, p_diff, num_velocity_dofs, num_pressure_dofs, Re):
     figures_folder = Path("figures") / f"Re{Re:.3f}"
@@ -417,7 +414,7 @@ for i in range(num_steps):
         loc_.copy(loc_n)
 
     # Save the simulation data for the current time step
-    if comm.Get_rank() == 0:
+    if mesh.comm.rank == 0:
         save_simulation_data(u_, p_, t, Re, mesh)
 
     # Compute physical quantities

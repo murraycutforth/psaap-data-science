@@ -116,7 +116,5 @@ def construct_psaap_density_example():
     return rho
 
 
-# TODO: assemble matrix A s.t. forward model is given by A @ u
-
 if __name__ == '__main__':
     main()

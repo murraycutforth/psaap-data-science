@@ -6,6 +6,45 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 
+def vol_and_im_plot(vol: np.array, im: np.array):
+    """Fancy plot showing 3D isosurface on LHS and 2D image on RHS
+    """
+    fig = plt.figure(figsize=(12, 6), dpi=200)
+    grid = plt.GridSpec(1, 2, width_ratios=[2, 1])
+
+    # Left is 3D isosurface plot
+
+    ax1 = fig.add_subplot(grid[0, 0], projection="3d")
+
+    ax1.set_xlim(0, vol.shape[0])
+    ax1.set_ylim(0, vol.shape[1])
+    ax1.set_zlim(0, vol.shape[2])
+
+    verts, faces, normals, values = skimage.measure.marching_cubes(
+        vol, level=0.5, spacing=(1, 1, 1), allow_degenerate=False, method='lewiner'
+    )
+
+    mesh = Poly3DCollection(verts[faces])
+    mesh.set_edgecolor("k")
+    mesh.set_linewidth(0.05)
+    mesh.set_alpha(0.9)
+
+    ax1.plot_trisurf(verts[:, 0], verts[:, 1], np.zeros_like(verts[:, 2]), triangles=faces, color='gray', alpha=0.3)
+    ax1.plot_trisurf(verts[:, 0], vol.shape[1] * np.ones_like(verts[:, 1]), verts[:, 2], triangles=faces, color='gray', alpha=0.3)
+    ax1.plot_trisurf(np.zeros_like(verts[:, 0]), verts[:, 1], verts[:, 2], triangles=faces, color='gray', alpha=0.3)
+
+    ax1.add_collection3d(mesh)
+    ax1.set_aspect('equal')
+
+    # Right is 2D image plot
+
+    ax2 = fig.add_subplot(grid[0, 1])
+    ax2.imshow(im, cmap='gray')
+    ax2.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
 def write_slice_plot(vol: np.array, outpath: Path, verbose: bool) -> None:
     """Write a 3-panel slice plot of a 3D volume
     """

@@ -82,6 +82,8 @@ def grad_2_y_operator(Nx, Ny, Nz, dy = 1.0) -> np.array:
 
 
 class TestOperators(unittest.TestCase):
+    """Lots and lots of AI generated tests to give some confidence in the operators above
+    """
     def setUp(self):
         # Constant volume
         self.ones_vol = np.ones((2, 2, 2))

@@ -108,7 +108,7 @@ class NeuralBspline(torch.nn.Module):
                 print(f'Epoch {epoch}, loss {loss.item()}')
         print(f'Final loss {loss.item()}')
 
-        self.visualise_neural_basis_fns()
+        #self.visualise_neural_basis_fns()
 
 
 class NeuralNURBs(NeuralBspline):

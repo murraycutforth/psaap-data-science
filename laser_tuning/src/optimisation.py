@@ -93,7 +93,7 @@ def constant_offset_model_optimisation(lf_data, hf_data, metric_to_distance_matr
     ub = np.array([bounds[i][1] for i in range(4)])
     lb = np.array([bounds[i][0] for i in range(4)])
 
-    N_reps = 200
+    N_reps = 250
     results = {k: [] for k in metric_to_distance_matrix.keys()}
     errors = defaultdict(list)
 
@@ -104,6 +104,9 @@ def constant_offset_model_optimisation(lf_data, hf_data, metric_to_distance_matr
     }
 
     def run_single_optimisation(metric, tol):
+        #fn_val_0 = constant_offset_model_error(np.zeros(4), metric_to_interps[metric], hf_data)
+        #print(f'Zero offset error for {metric}: {fn_val_0}')
+
         x0 = np.random.uniform(0, 1, 4) * (ub - lb) + lb
         interps = metric_to_interps[metric]
         res = minimize(constant_offset_model_error, x0,
@@ -116,11 +119,17 @@ def constant_offset_model_optimisation(lf_data, hf_data, metric_to_distance_matr
         errors[metric].append(res.fun)
 
     for i in range(N_reps):
-        run_single_optimisation('Ejecta Velocity (1000K)', 1e-2)
-        run_single_optimisation('Dice (Ejecta 500K)', 1e-3)
-        #run_single_optimisation('Dice (Ejecta 1000K)', 1e-3)
-        run_single_optimisation('RMSE', 1e-2)
-        run_single_optimisation('Dice (1000K)', 1e-3)
+        #run_single_optimisation('Ejecta Velocity (1000K)', 1e-2)
+        #run_single_optimisation('RMSE', 1e-2)
+        #run_single_optimisation('Dice (1000K)', 1e-3)
+        #run_single_optimisation('Dice (Ejecta 1000K)', 1e-4)
+        #run_single_optimisation('Dice (500K)', 1e-3)
+        #run_single_optimisation('Dice (Ejecta 500K)', 1e-3)
+        #run_single_optimisation('Dice (750K)', 1e-3)
+        #run_single_optimisation('Dice (Ejecta 750K)', 1e-3)
+
+        for metric in metric_to_distance_matrix.keys():
+            run_single_optimisation(metric, 1e-3)
 
     # Prepare data for DataFrame
     data = {}
@@ -150,6 +159,13 @@ def constant_offset_model_optimisation(lf_data, hf_data, metric_to_distance_matr
             min_err = np.min(errs)
             err_threshold = min_err + 0.1 * (max_err - min_err)
             yvals = yvals[errs < err_threshold]  # Only plot values where error is below average error
+
+            if len(yvals) <= 1:
+                err_threshold = min_err + 0.25 * (max_err - min_err)
+                yvals = df.loc[(metric, param)].values
+                yvals = yvals[errs < err_threshold]  # Only plot values where error is below average error
+
+            assert len(yvals) > 1, f'Not enough values for {metric} and {param} below error threshold ({len(yvals)}). Min error: {min_err}, max error: {max_err}'
 
             # KDE plot with matplotlib
             kde = gaussian_kde(yvals)
@@ -220,9 +236,11 @@ def constant_offset_model_optimisation(lf_data, hf_data, metric_to_distance_matr
 
         metric_df = df.loc[metric]
         errs = metric_df.loc['error'].values
-        top_inds = np.argsort(errs)[:3]  # These are the column inds of the top 3 results
+        top_inds = np.argsort(errs)[:5]  # These are the column inds of the top 3 results
 
-        for i in range(3):
+        print(f'Top 5 metric values for metric: {metric}: {errs[top_inds]}')
+
+        for i in range(5):
             alpha = metric_df.loc['alpha', (0, top_inds[i])]
             beta = metric_df.loc['beta', (0, top_inds[i])]
             L = metric_df.loc['L', (0, top_inds[i])]
@@ -239,7 +257,7 @@ def constant_offset_model_optimisation(lf_data, hf_data, metric_to_distance_matr
 
     ax.set_ylim(-1, 1)
     ax.set_xticks(np.arange(4))
-    ax.set_xticklabels(['alpha', 'beta', 'L [m]', 'fwhm [us / 100]'])
+    ax.set_xticklabels(['alpha', 'beta', 'L [mm]', 'fwhm [$\\mu$s / 100]'])
     ax.grid(True)  # Enable gridlines
     ax.grid(which='both', linestyle='--', linewidth=0.5)
     ax.spines['top'].set_visible(False)

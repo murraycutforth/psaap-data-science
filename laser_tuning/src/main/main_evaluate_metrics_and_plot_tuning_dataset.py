@@ -304,28 +304,32 @@ def plot_metric_correlation(metric_name_to_distance_matrix):
 
 
 def compute_metric_name_to_distance_matrix(lf_data, hf_data):
-    rmses = compute_pairwise_metric(lf_data, hf_data, compute_rmse)
+    #rmses = compute_pairwise_metric(lf_data, hf_data, compute_rmse)
     #maes = compute_pairwise_metric(lf_data, hf_data, compute_mae)
     #znccs = compute_pairwise_metric(lf_data, hf_data, compute_zncc)
     #dice_500 = compute_pairwise_metric(lf_data, hf_data, compute_dice, threshold=500.0)
-    dice_1000 = compute_pairwise_metric(lf_data, hf_data, compute_dice, threshold=1000.0)
-    dice_500_ejecta = compute_pairwise_metric(lf_data, hf_data, compute_dice_cone_subset, threshold=500.0)
+    #dice_1000 = compute_pairwise_metric(lf_data, hf_data, compute_dice, threshold=1000.0)
+    #dice_500_ejecta = compute_pairwise_metric(lf_data, hf_data, compute_dice_cone_subset, threshold=500.0)
     #dice_1000_ejecta = compute_pairwise_metric(lf_data, hf_data, compute_dice_cone_subset, threshold=1000.0)
     #ejecta_v_500 = compute_ejecta_velocity_error(lf_data, hf_data, threshold=500)
-    ejecta_v_1000 = compute_ejecta_velocity_error(lf_data, hf_data, threshold=1000)
+    #ejecta_v_1000 = compute_ejecta_velocity_error(lf_data, hf_data, threshold=1000)
+    dice_750 = compute_pairwise_metric(lf_data, hf_data, compute_dice, threshold=750.0)
+    dice_750_ejecta = compute_pairwise_metric(lf_data, hf_data, compute_dice_cone_subset, threshold=750.0)
 
     print('All metrics computed')
 
     return {
-        'RMSE': rmses,
+        #'RMSE': rmses,
         #'MAE': maes,
         #'ZNCC': znccs,
         #'Dice (500K)': dice_500,
-        'Dice (1000K)': dice_1000,
-        'Dice (Ejecta 500K)': dice_500_ejecta,
+        #'Dice (1000K)': dice_1000,
+        #'Dice (Ejecta 500K)': dice_500_ejecta,
         #'Dice (Ejecta 1000K)': dice_1000_ejecta,
         #'Ejecta Velocity (500K)': ejecta_v_500,
-        'Ejecta Velocity (1000K)': ejecta_v_1000
+        #'Ejecta Velocity (1000K)': ejecta_v_1000
+        'Dice (750K)': dice_750,
+        'Dice (Ejecta 750K)': dice_750_ejecta
     }
 
 
