@@ -6,51 +6,51 @@
 eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"
 conda activate fenicsx-env
 cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics
-mpirun -n 32 python flow_past_cylinder.py --Re 1012
-mpirun -n 32 python flow_past_cylinder.py --Re 1013
-mpirun -n 32 python flow_past_cylinder.py --Re 1014
-mpirun -n 32 python flow_past_cylinder.py --Re 1015
-mpirun -n 32 python flow_past_cylinder.py --Re 1016
-mpirun -n 32 python flow_past_cylinder.py --Re 1017
-mpirun -n 32 python flow_past_cylinder.py --Re 1018
-mpirun -n 32 python flow_past_cylinder.py --Re 1019
-mpirun -n 32 python flow_past_cylinder.py --Re 1020
-mpirun -n 32 python flow_past_cylinder.py --Re 1021
-mpirun -n 32 python flow_past_cylinder.py --Re 1022
-mpirun -n 32 python flow_past_cylinder.py --Re 1023
-mpirun -n 32 python flow_past_cylinder.py --Re 1024
-mpirun -n 32 python flow_past_cylinder.py --Re 1025
-mpirun -n 32 python flow_past_cylinder.py --Re 1026
-mpirun -n 32 python flow_past_cylinder.py --Re 1027
-mpirun -n 32 python flow_past_cylinder.py --Re 1028
-mpirun -n 32 python flow_past_cylinder.py --Re 1029
-mpirun -n 32 python flow_past_cylinder.py --Re 1030
-mpirun -n 32 python flow_past_cylinder.py --Re 1031
-mpirun -n 32 python flow_past_cylinder.py --Re 1032
-mpirun -n 32 python flow_past_cylinder.py --Re 1033
-mpirun -n 32 python flow_past_cylinder.py --Re 1034
-mpirun -n 32 python flow_past_cylinder.py --Re 1035
-mpirun -n 32 python flow_past_cylinder.py --Re 1036
-mpirun -n 32 python flow_past_cylinder.py --Re 1037
-mpirun -n 32 python flow_past_cylinder.py --Re 1038
-mpirun -n 32 python flow_past_cylinder.py --Re 1039
-mpirun -n 32 python flow_past_cylinder.py --Re 1040
-mpirun -n 32 python flow_past_cylinder.py --Re 1041
-mpirun -n 32 python flow_past_cylinder.py --Re 1042
-mpirun -n 32 python flow_past_cylinder.py --Re 1043
-mpirun -n 32 python flow_past_cylinder.py --Re 1044
-mpirun -n 32 python flow_past_cylinder.py --Re 1045
-mpirun -n 32 python flow_past_cylinder.py --Re 1046
-mpirun -n 32 python flow_past_cylinder.py --Re 1047
-mpirun -n 32 python flow_past_cylinder.py --Re 1048
-mpirun -n 32 python flow_past_cylinder.py --Re 1049
-mpirun -n 32 python flow_past_cylinder.py --Re 1050
-mpirun -n 32 python flow_past_cylinder.py --Re 1051
-mpirun -n 32 python flow_past_cylinder.py --Re 1052
-mpirun -n 32 python flow_past_cylinder.py --Re 1053
-mpirun -n 32 python flow_past_cylinder.py --Re 1054
-mpirun -n 32 python flow_past_cylinder.py --Re 1055
-mpirun -n 32 python flow_past_cylinder.py --Re 1056
-mpirun -n 32 python flow_past_cylinder.py --Re 1057
-mpirun -n 32 python flow_past_cylinder.py --Re 1058
-mpirun -n 32 python flow_past_cylinder.py --Re 1059
+python flow_past_cylinder.py --Re 1012
+python flow_past_cylinder.py --Re 1013
+python flow_past_cylinder.py --Re 1014
+python flow_past_cylinder.py --Re 1015
+python flow_past_cylinder.py --Re 1016
+python flow_past_cylinder.py --Re 1017
+python flow_past_cylinder.py --Re 1018
+python flow_past_cylinder.py --Re 1019
+python flow_past_cylinder.py --Re 1020
+python flow_past_cylinder.py --Re 1021
+python flow_past_cylinder.py --Re 1022
+python flow_past_cylinder.py --Re 1023
+python flow_past_cylinder.py --Re 1024
+python flow_past_cylinder.py --Re 1025
+python flow_past_cylinder.py --Re 1026
+python flow_past_cylinder.py --Re 1027
+python flow_past_cylinder.py --Re 1028
+python flow_past_cylinder.py --Re 1029
+python flow_past_cylinder.py --Re 1030
+python flow_past_cylinder.py --Re 1031
+python flow_past_cylinder.py --Re 1032
+python flow_past_cylinder.py --Re 1033
+python flow_past_cylinder.py --Re 1034
+python flow_past_cylinder.py --Re 1035
+python flow_past_cylinder.py --Re 1036
+python flow_past_cylinder.py --Re 1037
+python flow_past_cylinder.py --Re 1038
+python flow_past_cylinder.py --Re 1039
+python flow_past_cylinder.py --Re 1040
+python flow_past_cylinder.py --Re 1041
+python flow_past_cylinder.py --Re 1042
+python flow_past_cylinder.py --Re 1043
+python flow_past_cylinder.py --Re 1044
+python flow_past_cylinder.py --Re 1045
+python flow_past_cylinder.py --Re 1046
+python flow_past_cylinder.py --Re 1047
+python flow_past_cylinder.py --Re 1048
+python flow_past_cylinder.py --Re 1049
+python flow_past_cylinder.py --Re 1050
+python flow_past_cylinder.py --Re 1051
+python flow_past_cylinder.py --Re 1052
+python flow_past_cylinder.py --Re 1053
+python flow_past_cylinder.py --Re 1054
+python flow_past_cylinder.py --Re 1055
+python flow_past_cylinder.py --Re 1056
+python flow_past_cylinder.py --Re 1057
+python flow_past_cylinder.py --Re 1058
+python flow_past_cylinder.py --Re 1059

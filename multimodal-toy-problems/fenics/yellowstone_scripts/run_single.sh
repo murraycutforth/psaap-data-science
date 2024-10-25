@@ -13,6 +13,6 @@ conda activate fenicsx-env
 
 # run main script
 cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics
-mpirun -n 32 python flow_past_cylinder.py --Re 100
+python flow_past_cylinder.py --Re 100
 
 date

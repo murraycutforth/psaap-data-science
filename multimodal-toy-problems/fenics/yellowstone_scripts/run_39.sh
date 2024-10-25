@@ -6,32 +6,32 @@
 eval "$(/opt/ohpc/pub/compiler/anaconda3/2024.02-1/bin/conda shell.bash hook)"
 conda activate fenicsx-env
 cd /home/darve/mcc4/psaap-data-science/multimodal-toy-problems/fenics
-mpirun -n 32 python flow_past_cylinder.py --Re 1972
-mpirun -n 32 python flow_past_cylinder.py --Re 1973
-mpirun -n 32 python flow_past_cylinder.py --Re 1974
-mpirun -n 32 python flow_past_cylinder.py --Re 1975
-mpirun -n 32 python flow_past_cylinder.py --Re 1976
-mpirun -n 32 python flow_past_cylinder.py --Re 1977
-mpirun -n 32 python flow_past_cylinder.py --Re 1978
-mpirun -n 32 python flow_past_cylinder.py --Re 1979
-mpirun -n 32 python flow_past_cylinder.py --Re 1980
-mpirun -n 32 python flow_past_cylinder.py --Re 1981
-mpirun -n 32 python flow_past_cylinder.py --Re 1982
-mpirun -n 32 python flow_past_cylinder.py --Re 1983
-mpirun -n 32 python flow_past_cylinder.py --Re 1984
-mpirun -n 32 python flow_past_cylinder.py --Re 1985
-mpirun -n 32 python flow_past_cylinder.py --Re 1986
-mpirun -n 32 python flow_past_cylinder.py --Re 1987
-mpirun -n 32 python flow_past_cylinder.py --Re 1988
-mpirun -n 32 python flow_past_cylinder.py --Re 1989
-mpirun -n 32 python flow_past_cylinder.py --Re 1990
-mpirun -n 32 python flow_past_cylinder.py --Re 1991
-mpirun -n 32 python flow_past_cylinder.py --Re 1992
-mpirun -n 32 python flow_past_cylinder.py --Re 1993
-mpirun -n 32 python flow_past_cylinder.py --Re 1994
-mpirun -n 32 python flow_past_cylinder.py --Re 1995
-mpirun -n 32 python flow_past_cylinder.py --Re 1996
-mpirun -n 32 python flow_past_cylinder.py --Re 1997
-mpirun -n 32 python flow_past_cylinder.py --Re 1998
-mpirun -n 32 python flow_past_cylinder.py --Re 1999
-mpirun -n 32 python flow_past_cylinder.py --Re 2000
+python flow_past_cylinder.py --Re 1972
+python flow_past_cylinder.py --Re 1973
+python flow_past_cylinder.py --Re 1974
+python flow_past_cylinder.py --Re 1975
+python flow_past_cylinder.py --Re 1976
+python flow_past_cylinder.py --Re 1977
+python flow_past_cylinder.py --Re 1978
+python flow_past_cylinder.py --Re 1979
+python flow_past_cylinder.py --Re 1980
+python flow_past_cylinder.py --Re 1981
+python flow_past_cylinder.py --Re 1982
+python flow_past_cylinder.py --Re 1983
+python flow_past_cylinder.py --Re 1984
+python flow_past_cylinder.py --Re 1985
+python flow_past_cylinder.py --Re 1986
+python flow_past_cylinder.py --Re 1987
+python flow_past_cylinder.py --Re 1988
+python flow_past_cylinder.py --Re 1989
+python flow_past_cylinder.py --Re 1990
+python flow_past_cylinder.py --Re 1991
+python flow_past_cylinder.py --Re 1992
+python flow_past_cylinder.py --Re 1993
+python flow_past_cylinder.py --Re 1994
+python flow_past_cylinder.py --Re 1995
+python flow_past_cylinder.py --Re 1996
+python flow_past_cylinder.py --Re 1997
+python flow_past_cylinder.py --Re 1998
+python flow_past_cylinder.py --Re 1999
+python flow_past_cylinder.py --Re 2000

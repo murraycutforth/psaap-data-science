@@ -1,3 +1,10 @@
 __pycache__
 .DS_Store
 .idea
+*.csv
+*.pth
+*.json
+*.png
+*.gif
+output
+*.txt
